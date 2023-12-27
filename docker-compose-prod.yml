@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  adminer:
+    image: adminer
+    container_name: adminer
+    restart: always
+    environment:
+      ADMINER_DESIGN: mvt
+      ADMINER_DEFAULT_SERVER: postgres
+    ports:
+      - 4242:8080 
+
+  app:
+    image: msfrms/truck_backend
+    container_name: 16drivers-backend
+    command: ["/fastapi_app/src/startup.sh"]    
+    ports:
+      - '0.0.0.0:8000:8000'
+    volumes:
+      - ./database:/fastapi_app/src/database
+
+  telegram-bot:
+    image: msfrms/truck_backend
+    container_name: 16drivers-backend-bot
+    command: ["/fastapi_app/src/startup-tg-bot.sh"]    
+
+
+  celery:
+    image: msfrms/truck_backend
+    container_name: 16drivers-backend-celery
+    command: ["/fastapi_app/src/celery.sh", "celery"]    
+
+  flower:
+    image: msfrms/truck_backend
+    container_name: 16drivers-backend-flower
+    command: ["/fastapi_app/src/celery.sh", "flower"]    
+    ports:
+      - 8888:5555             

@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  adminer:
+    image: adminer
+    container_name: adminer
+    restart: always
+    environment:
+      ADMINER_DESIGN: mvt
+      ADMINER_DEFAULT_SERVER: postgres
+    ports:
+      - 4242:8080 
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: 16drivers-backend
+    command: ["/fastapi_app/src/startup.sh"]
+    env_file:
+      - src/.env    
+    ports:
+      - '0.0.0.0:8000:8000'
+    volumes:
+      - ./database:/fastapi_app/src/database
